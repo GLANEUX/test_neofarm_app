@@ -32,6 +32,8 @@ export const HomePage = () => {
     state: "todo",
   });
 
+  const [editingTask, setEditingTask] = useState<ActionType | null>(null);
+
 
   const formatDate = (date?: Date) => {
     return date
@@ -72,6 +74,17 @@ export const HomePage = () => {
     });
   };
 
+  const editTask = (task: ActionType) => {
+    setEditingTask(task);
+  };
+
+  const updateTask = (updatedTask: ActionType) => {
+    setTaskList(
+      taskList.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
+    setEditingTask(null);
+  };
+
 
   return (
     <div>
@@ -96,6 +109,7 @@ export const HomePage = () => {
               <td>{formatDate(action.deadline)}</td>
               <td>{action.state}</td>
               <td>
+                <button onClick={() => editTask(action)}>Modifier</button>
                 <button onClick={() => removeAction(action.id)}>
                   Supprimer
                 </button>
@@ -164,6 +178,89 @@ export const HomePage = () => {
         </label>
       </div>
       <button onClick={addTask}>Ajouter</button>
+
+      {editingTask && (
+        <div>
+          <h3>Modifier une tâche</h3>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateTask(editingTask);
+            }}
+          >
+            <input
+              type="text"
+              value={editingTask.name}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, name: e.target.value })
+              }
+              required
+            />
+            <input
+              type="text"
+              value={editingTask.comment || ""}
+              onChange={(e) =>
+                setEditingTask({ ...editingTask, comment: e.target.value })
+              }
+            />
+            <input
+              type="datetime-local"
+              value={
+                editingTask.deadline
+                  ? editingTask.deadline.toISOString().slice(0, -8)
+                  : ""
+              }
+              onChange={(e) =>
+                setEditingTask({
+                  ...editingTask,
+                  deadline: e.target.value
+                    ? new Date(e.target.value)
+                    : undefined,
+                })
+              }
+            />
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="state"
+                  value="todo"
+                  checked={editingTask.state === "todo"}
+                  onChange={() =>
+                    setEditingTask({ ...editingTask, state: "todo" })
+                  }
+                />
+                To-Do
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="state"
+                  value="blocked"
+                  checked={editingTask.state === "blocked"}
+                  onChange={() =>
+                    setEditingTask({ ...editingTask, state: "blocked" })
+                  }
+                />
+                Bloqué
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="state"
+                  value="done"
+                  checked={editingTask.state === "done"}
+                  onChange={() =>
+                    setEditingTask({ ...editingTask, state: "done" })
+                  }
+                />
+                Fait
+              </label>
+            </div>
+            <button type="submit">Modifier</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
