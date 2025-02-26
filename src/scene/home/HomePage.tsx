@@ -1,4 +1,14 @@
 import { useState } from "react";
+import {
+  Button,
+  ButtonGroup,
+  Table,
+  Text,
+  Container,
+  Input,
+  Box,
+  Heading,
+} from "@chakra-ui/react";
 
 type ActionType = {
   id: number;
@@ -33,7 +43,6 @@ export const HomePage = () => {
   });
 
   const [editingTask, setEditingTask] = useState<ActionType | null>(null);
-
 
   const formatDate = (date?: Date) => {
     return date
@@ -85,110 +94,136 @@ export const HomePage = () => {
     setEditingTask(null);
   };
 
-
   return (
-    <div>
-      <h2>Todo List</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Commentaire</th>
-            <th>Deadline</th>
-            <th>État</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+    <Box
+      m={5}
+      p={6}
+      maxW="700px"
+      mx="auto"
+      bg="gray.50"
+      borderRadius="md"
+      shadow="md"
+    >
+      <Heading size="lg" textAlign="center" mb={4}>
+        Todo List
+      </Heading>
+      <Table.Root>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader>ID</Table.ColumnHeader>
+            <Table.ColumnHeader>Nom</Table.ColumnHeader>
+            <Table.ColumnHeader>Commentaire</Table.ColumnHeader>
+            <Table.ColumnHeader>Deadline</Table.ColumnHeader>
+            <Table.ColumnHeader>État</Table.ColumnHeader>
+            <Table.ColumnHeader>Actions</Table.ColumnHeader>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {taskList.map((action) => (
-            <tr key={action.id}>
-              <td>{action.id}</td>
-              <td>{action.name}</td>
-              <td>{action.comment}</td>
-              <td>{formatDate(action.deadline)}</td>
-              <td>{action.state}</td>
-              <td>
-                <button onClick={() => editTask(action)}>Modifier</button>
-                <button onClick={() => removeAction(action.id)}>
-                  Supprimer
-                </button>
-              </td>
-            </tr>
+            <Table.Row key={action.id}>
+              <Table.Cell>{action.id}</Table.Cell>
+              <Table.Cell>{action.name}</Table.Cell>
+              <Table.Cell>{action.comment}</Table.Cell>
+              <Table.Cell>{formatDate(action.deadline)}</Table.Cell>
+              <Table.Cell>{action.state}</Table.Cell>
+              <Table.Cell>
+                <ButtonGroup size="sm" variant="outline">
+                  <Button colorPalette="blue" onClick={() => editTask(action)}>
+                    Modifier
+                  </Button>
+                  <Button
+                    colorPalette="red"
+                    onClick={() => removeAction(action.id)}
+                  >
+                    Supprimer
+                  </Button>
+                </ButtonGroup>
+              </Table.Cell>
+            </Table.Row>
           ))}
-        </tbody>
-      </table>
-      <h3>Ajouter une tâche</h3>
-      <input
-        type="text"
-        placeholder="Nom de la tâche"
-        value={newTask.name}
-        onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Commentaire"
-        value={newTask.comment}
-        onChange={(e) => setNewTask({ ...newTask, comment: e.target.value })}
-      />
-      <input
-        type="datetime-local"
-        value={
-          newTask.deadline ? newTask.deadline.toISOString().slice(0, -8) : ""
-        }
-        onChange={(e) =>
-          setNewTask({
-            ...newTask,
-            deadline: e.target.value ? new Date(e.target.value) : undefined,
-          })
-        }
-      />
-      <div>
-        <label>
-          <input
-            type="radio"
-            name="state"
-            value="todo"
-            checked={newTask.state === "todo"}
-            onChange={() => setNewTask({ ...newTask, state: "todo" })}
-          />
-          To-Do
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="state"
-            value="blocked"
-            checked={newTask.state === "blocked"}
-            onChange={() => setNewTask({ ...newTask, state: "blocked" })}
-          />
-          Bloqué
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="state"
-            value="done"
-            checked={newTask.state === "done"}
-            onChange={() => setNewTask({ ...newTask, state: "done" })}
-            required
-          />
-          Fait
-        </label>
-      </div>
-      <button onClick={addTask}>Ajouter</button>
+        </Table.Body>
+      </Table.Root>
+
+      <Container p="4">
+        <Text textStyle="xl" fontWeight="bold">
+          Ajouter une tâche
+        </Text>
+        <Input
+          p="4"
+          type="text"
+          placeholder="Nom de la tâche"
+          value={newTask.name}
+          onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
+          required
+        />
+        <Input
+          p="4"
+          type="text"
+          placeholder="Commentaire"
+          value={newTask.comment}
+          onChange={(e) => setNewTask({ ...newTask, comment: e.target.value })}
+        />
+        <Input
+          p="4"
+          type="datetime-local"
+          value={
+            newTask.deadline ? newTask.deadline.toISOString().slice(0, -8) : ""
+          }
+          onChange={(e) =>
+            setNewTask({
+              ...newTask,
+              deadline: e.target.value ? new Date(e.target.value) : undefined,
+            })
+          }
+        />
+        <div>
+          <label>
+            <input
+              type="radio"
+              name="state"
+              value="todo"
+              checked={newTask.state === "todo"}
+              onChange={() => setNewTask({ ...newTask, state: "todo" })}
+            />
+            To-Do
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="state"
+              value="blocked"
+              checked={newTask.state === "blocked"}
+              onChange={() => setNewTask({ ...newTask, state: "blocked" })}
+            />
+            Bloqué
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="state"
+              value="done"
+              checked={newTask.state === "done"}
+              onChange={() => setNewTask({ ...newTask, state: "done" })}
+              required
+            />
+            Fait
+          </label>
+        </div>
+        <Button onClick={addTask}>Ajouter</Button>
+      </Container>
 
       {editingTask && (
-        <div>
-          <h3>Modifier une tâche</h3>
+        <Container p="4">
+          <Text textStyle="xl" fontWeight="bold">
+            Modifier une tâche
+          </Text>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               updateTask(editingTask);
             }}
           >
-            <input
+            <Input
               type="text"
               value={editingTask.name}
               onChange={(e) =>
@@ -196,14 +231,14 @@ export const HomePage = () => {
               }
               required
             />
-            <input
+            <Input
               type="text"
               value={editingTask.comment || ""}
               onChange={(e) =>
                 setEditingTask({ ...editingTask, comment: e.target.value })
               }
             />
-            <input
+            <Input
               type="datetime-local"
               value={
                 editingTask.deadline
@@ -257,10 +292,10 @@ export const HomePage = () => {
                 Fait
               </label>
             </div>
-            <button type="submit">Modifier</button>
+            <Button type="submit">Modifier</Button>
           </form>
-        </div>
+        </Container>
       )}
-    </div>
+    </Box>
   );
 };
